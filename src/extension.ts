@@ -25,7 +25,9 @@ import * as fs from 'fs';
 // import * as G from 'glob';
 import { table } from 'table';
 import * as path from 'path';
-var fileSep = path.sep;    // returns '\\' on windows, '/' on *nix
+import { platform } from 'os';
+let DIR_SEP = path.sep; // returns '\\' on windows, '/' on *nix
+const cp = require('child_process');
 
 // This method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -79,9 +81,78 @@ export function activate(context: vscode.ExtensionContext) {
 
         // vscode.window.showInformationMessage('execute FlutterAndroidxChecker');
 
+        if (process.platform == 'win32') {
+            cp.exec('echo %cd% & cd ' + vscode.workspace.rootPath + ' & echo %cd% & cd android & echo %cd% & ' + 'gradlew.bat app:dependencies', (err: string, stdout: string, stderr: string) => {
+                let arrStdout: string[] = stdout.split("\n");
+
+                let strRows: string[] = [];
+                let tempName: string = '';
+                let countAndroidX: number = 0;
+                let countAndroidS: number = 0;
+
+                strRows.push('Result of gradle app:dependencies');
+                strRows.push('');
+                strRows.push('lib name count_androidx count_androidsupport');
+                arrStdout.forEach((e: string) => {
+                    if (e.indexOf('+--- project :') == 0) {
+                        let rrresult: string = '';
+                        if (countAndroidS > 0) {
+                            rrresult = ' android.support ---';
+                        } else if (countAndroidX > 0) {
+                            rrresult = ' androidx ----------';
+                        } else {
+                            rrresult = ' ? -----------------';
+                        }
+
+                        if (tempName != '') {
+                            let strRow: string = [
+                                rrresult.trim(),
+                                tempName.trim(),
+                                '' + countAndroidX,
+                                '' + countAndroidS
+                            ].join(' ');
+                            strRows.push(strRow);
+
+                            // console.log(
+                            //     rrresult,
+                            //     tempName,
+                            //     countAndroidX,
+                            //     countAndroidS
+                            // );
+
+                            countAndroidX = 0;
+                            countAndroidS = 0;
+                        }
+
+                        let eName: string = e.replace('+--- project :', ''); // sqflite
+                        // console.log(eName);
+
+                        tempName = eName;
+                    } else {
+                        if (tempName != '') {
+                            if (e.indexOf('androidx.') != -1) {
+                                countAndroidX++;
+                            }
+                            if (e.indexOf('android.support') != -1) {
+                                countAndroidS++;
+                            }
+                        }
+                    }
+                });
+                // console.log('stderr: ' + stderr);
+                if (err) {
+                    // console.log('error: ' + err);
+                }
+
+                // mStrResult = stdout + stderr + err;
+                mStrResult = strRows.join("\n");
+                vscode.commands.executeCommand('extension.openVirDocResult');
+            });
+        }
+
         mStrResult = ''; // Reset text first.
 
-        if (fileSep) {
+        if (DIR_SEP) {
             // OK
         } else {
             return;
@@ -216,7 +287,7 @@ export function activate(context: vscode.ExtensionContext) {
                 //     }
                 // }
 
-                gradleBuildFileLocations.push(pluginPath + 'android' + fileSep + 'build.gradle');
+                gradleBuildFileLocations.push(pluginPath + 'android' + DIR_SEP + 'build.gradle');
             } catch (e) {
                 gradleBuildFileLocations.push('');
             }
