@@ -60,7 +60,6 @@
         "vscode": "^1.1.28"
     },
     "dependencies": {
-        "@types/glob": "^7.1.1",
         "@types/js-yaml": "^3.12.1",
         "@types/table": "^4.0.5",
         "js-yaml": "^3.13.1",
