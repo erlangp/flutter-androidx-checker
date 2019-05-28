@@ -27,7 +27,16 @@ import { table } from 'table';
 import * as path from 'path';
 // import { platform } from 'os';
 let DIR_SEP = path.sep; // returns '\\' on windows, '/' on *nix
-const cp = require('child_process');
+// const cp = require('child_process');
+
+/*
+    "@types/glob": "^7.1.1",
+    "@types/js-yaml": "^3.12.1",
+    "@types/table": "^4.0.5",
+    "glob": "^7.1.3",
+    "js-yaml": "^3.13.1",
+    "table": "^5.2.3"
+*/
 
 // This method is called when your extension is activated
 // your extension is activated the very first time the command is executed
