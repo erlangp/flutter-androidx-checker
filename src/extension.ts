@@ -25,7 +25,7 @@ import * as fs from 'fs';
 // import * as G from 'glob';
 import { table } from 'table';
 import * as path from 'path';
-import { platform } from 'os';
+// import { platform } from 'os';
 let DIR_SEP = path.sep; // returns '\\' on windows, '/' on *nix
 const cp = require('child_process');
 
@@ -36,10 +36,11 @@ export function activate(context: vscode.ExtensionContext) {
     // This line of code will only be executed once when your extension is activated
     console.log('onActivate');
 
-    let mThenableProgress;
-    let mIntervalId: NodeJS.Timeout;
-    let mResolve: (value?: string) => void;
-    let mReject: (reason?: any) => void;
+    // let mThenableProgress;
+    // let mIntervalId: NodeJS.Timeout;
+    // let mResolve: (value?: string) => void;
+    // let mReject: (reason?: any) => void;
+
     let mStrResult = '';
 
     // Register a content provider for the scheme
@@ -81,6 +82,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         // vscode.window.showInformationMessage('execute FlutterAndroidxChecker');
 
+        /*
         if (process.platform == 'win32') {
             cp.exec('echo %cd% & cd ' + vscode.workspace.rootPath + ' & echo %cd% & cd android & echo %cd% & ' + 'gradlew.bat app:dependencies', (err: string, stdout: string, stderr: string) => {
                 let arrStdout: string[] = stdout.split("\n");
@@ -149,6 +151,7 @@ export function activate(context: vscode.ExtensionContext) {
                 vscode.commands.executeCommand('extension.openVirDocResult');
             });
         }
+        */
 
         mStrResult = ''; // Reset text first.
 
